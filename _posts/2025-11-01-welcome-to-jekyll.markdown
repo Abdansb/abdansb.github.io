@@ -1,10 +1,27 @@
 ---
 layout: post
-title:  "Welcome to Jekyll!"
+title:  "External VRM Mod Project Radeon HD6670"
 date:   2025-11-01 12:34:05 +0700
 categories: jekyll update
 ---
-You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run `jekyll serve`, which launches a web server and auto-regenerates your site when a file is updated.
+A hardware modification project to unlock the performance of an aging GPU by providing stable, adjustable voltage via an external Voltage Regulator Module (VRM).
+
+![Radeon 6670 chip codename Turks XT](/assets\img\radeon\turks.webp)
+
+### Introduction
+
+The MSI Radeon HD 6670 1GB GDDR5 is a mid-range graphics card from AMD's Northern Islands generation. Key specifications relevant to this project include:
+
+- GPU Core: Turks XT (40nm process)
+- Stream Processors: 480
+- Core Clock Speed: 800 MHz (stock)
+- Memory Clock Speed: 1000 MHz (4.0 Gbps GDDR5 effective)
+- Memory Interface: 128-bit
+- TDP (Thermal Design Power): ~66W
+- Power Connector: No external PCIe power connector (relies solely on PCIe slot power, 75W max)
+- Cooling Solution: Single fan, heatsink assembly.
+- VRM Configuration: Internal, typically 3 phase design for GPU and memory power delivery
+
 
 Jekyll requires blog post files to be named according to the following format:
 

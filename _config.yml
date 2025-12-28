@@ -18,10 +18,9 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Abdan Subekti | Electrical & Embedded Systems Engineer
+title: Abdan Subekti | Electrical Engineer
 email: abdannsubekti@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
-  A recent Electrical Engineering graduate with a passion for embedded systems and firmware development. Specializing in bare-metal C programming for microcontrollers and hands-on hardware integration. Explore my projects, from custom GPS trackers to hardware modification. I also possess complementary skills in modern software, including experience in IT Operations and Machine Learning.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 # twitter_username: jekyllrb # Dihapus karena tidak punya Twitter

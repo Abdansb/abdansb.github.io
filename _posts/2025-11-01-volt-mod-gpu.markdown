@@ -5,7 +5,7 @@ categories: [Hardware]
 ---
 A hardware modification project to unlock the performance of an aging GPU by providing stable, adjustable voltage via an external Voltage Regulator Module (VRM).
 
-![Radeon 6670 chip codename Turks XT](/assets\img\radeon\turks.webp)
+![Radeon 6670 chip codename Turks XT](/assets/img/radeon/turks.webp)
 
 ### Introduction
 
@@ -25,7 +25,7 @@ These specs show how much the card relies on the PCIe slot for power, which limi
 
 ### 1. Motivation
 
-![VRM Driver or PWM Controller IC](/assets\img\radeon\up6201B.webp)
+![VRM Driver or PWM Controller IC](/assets/img/radeon/up6201B.webp)
 
 Why an External VRM?
 
@@ -37,7 +37,7 @@ Instead of trying to replace that tiny, surface-mounted chip – which would nor
 
 #### 2.1 The Voltage Regulator Modules (VRMs)
 
-![VRM Driver or PWM Controller IC](/assets\img\radeon\up6201B_diagram.PNG)
+![VRM Driver or PWM Controller IC](/assets/img/radeon/up6201B_diagram.PNG)
 
 **Figure 1**: The official datasheet schematic for the uP6201B, a 2-phase synchronous buck controller which manages the GPU's core voltage.
 
@@ -46,7 +46,7 @@ The GPU's core voltage is supplied by a Voltage Regulator Module (VRM) that uses
 #### 2.2 Schematics Diagram
 In a 2-phase design, the total power delivery is split between two identical circuits, or "phases," which operate interleaved (180 degrees out of sync). This distributes heat, reduces electrical noise, and allows for a faster response to sudden changes in GPU load.
 
-![VRM Driver or PWM Controller IC](/assets\img\radeon\Ugate.PNG)
+![VRM Driver or PWM Controller IC](/assets/img/radeon/Ugate.PNG)
 
 **Figure 2:** A 2-phase VRM reference schematic from a Radeon 6770, which is functionally identical to the circuit on the HD 6670\.
 
@@ -54,7 +54,7 @@ To understand how the uP6201B is implemented, we can analyze the reference schem
 
 This diagram illustrates a discrete 2-phase design. **PHASE1** is designed with one high-side MOSFET (Q801) and has pads for two parallel low-side MOSFETs (Q802 and Q803). Using two low-side FETs is a common technique to handle higher current and distribute heat on more power-hungry GPUs. However, Q803 and Q813 are often optional. **PHASE2** mirrors this design (Q811, Q812, Q813, and L811). The controller sends signals (like `UGATE1_CTR` from the `uP6201B`) to the gates of these MOSFETs, switching them on and off thousands of times per second to produce the final `+VDDC` (GPU core voltage).
 
-![VRM Driver or PWM Controller IC](/assets\img\radeon\Mosfet.webp)
+![VRM Driver or PWM Controller IC](/assets/img/radeon/Mosfet.webp)
 
 **Figure 3:** The physical 2-phase VRM circuit on the MSI Radeon HD 6670 PCB, showing a more integrated implementation.
 
@@ -68,7 +68,7 @@ This inductors on the PCB are the connection points for the donor VRM. By cuttin
 
 #### 3. The Donor VRM From Asus Radeon R7 240 Low Profile
 
-![VRM Driver or PWM Controller IC](/assets\img\radeon\R7-240.jpg)
+![VRM Driver or PWM Controller IC](/assets/img/radeon/R7-240.jpg)
 
 **Figure 4:** The donor card, an Asus Radeon R7 240 Low Profile (image courtesy of TechPowerUp).
 
@@ -78,7 +78,7 @@ This card's VRM design is fundamentally different from the target HD 6670\. The 
 
 #### 3.1 Typical Application Circuit For The Controller
 
-![VRM Driver or PWM Controller IC](/assets\img\radeon\EM5305_diagram.PNG)
+![VRM Driver or PWM Controller IC](/assets/img/radeon/EM5305_diagram.PNG)
 
 **Figure 5:** The typical application circuit for the EM5305, synchronous buck controller used on the R7 240\.
 

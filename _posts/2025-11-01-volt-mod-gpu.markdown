@@ -7,7 +7,7 @@ A hardware modification project to unlock the performance of an aging GPU by pro
 
 ![Radeon 6670 chip codename Turks XT](/assets/img/radeon/turks.webp)
 
-### Introduction
+## Introduction
 
 The MSI Radeon HD 6670 1GB GDDR5 is a mid-range graphics card from AMD's Northern Islands generation. Key specifications relevant to this project include:
 

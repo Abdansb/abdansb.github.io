@@ -4,4 +4,4 @@ icon: fas fa-info-circle
 order: 4
 ---
 
-Abdan subekti is using jekyll
+This is my personal website. I enjoy keeping old photos, collecting notes, and figuring out how things work. Consequently, I built this site primarily to preserve my projects, share articles about my hobbies, and publish tutorials.

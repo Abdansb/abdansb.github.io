@@ -7,6 +7,8 @@ tags: [puppy-linux, docker, trixie, wayland, tutorial]
 
 Installing Docker on **Puppy Linux** (specifically the new **Trixie Wayland** version) is not for the faint of heart. Since Puppy runs in RAM and uses a layered filesystem, a standard Docker installation often leads to a filled-up save file, connection errors, or disk usage explosions due to incompatible storage drivers.
 
+![TrixiePup Wayland running Docker](/assets/img/radeon/dockerun.png)
+
 I recently went through the pain of setting this up so you don't have to. Here is the definitive guide to running Docker Engine (and VS Code Dev Containers) on Puppy Linux Trixie Wayland.
 
 ## Prerequisites

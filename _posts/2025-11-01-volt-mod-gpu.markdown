@@ -23,7 +23,7 @@ The MSI Radeon HD 6670 1GB GDDR5 is a mid-range graphics card from AMD's Norther
 
 These specs show how much the card relies on the PCIe slot for power, which limits how much i can overclock and boost performance. That's why an external VRM mod is a pretty good idea. Also, the stock cooler is made for the 66W TDP, so i'll need to keep an eye on it if i bump up the power.
 
-### 1. Motivation
+### Motivation
 
 ![VRM Driver or PWM Controller IC](/assets/img/radeon/up6201B.webp)
 
@@ -33,9 +33,9 @@ The power system on my MSI Radeon HD 6670 totally crapped out. Turns out the sto
 
 Instead of trying to replace that tiny, surface-mounted chip – which would normally need a hot air station, and I only have a basic soldering iron – I decided to go a different route. I actually have another broken GPU with a perfectly good VRM section on it. So, the plan is to harvest that working VRM and integrate it with the MSI Radeon HD 6670. This way, I'm not just fixing the card. I'm also giving it a huge upgrade. The new VRM lets me control the voltage manually using hardware. This opens the door for real overclocking, something the stock card could never do.
 
-### 2. Understanding the MSI Radeon HD 6670
+### Understanding the MSI Radeon HD 6670
 
-#### 2.1 The Voltage Regulator Modules (VRMs)
+#### The Voltage Regulator Modules (VRMs)
 
 ![VRM Driver or PWM Controller IC](/assets/img/radeon/up6201B_diagram.PNG)
 
@@ -43,7 +43,7 @@ Instead of trying to replace that tiny, surface-mounted chip – which would nor
 
 The GPU's core voltage is supplied by a Voltage Regulator Module (VRM) that uses a 2-phase synchronous buck converter, managed by the uP6201B controller shown in Figure 1. A buck converter's primary function is to step down a higher input voltage (e.g., 12V) to a much lower, precise output voltage (e.g., 1.0V for the GPU core).
 
-#### 2.2 Schematics Diagram
+#### Schematics Diagram
 In a 2-phase design, the total power delivery is split between two identical circuits, or "phases," which operate interleaved (180 degrees out of sync). This distributes heat, reduces electrical noise, and allows for a faster response to sudden changes in GPU load.
 
 ![VRM Driver or PWM Controller IC](/assets/img/radeon/Ugate.PNG)
@@ -66,7 +66,7 @@ These inductors are critical. Beyond storing energy, their internal resistance (
 
 This inductors on the PCB are the connection points for the donor VRM. By cutting the traces immediately after these inductors and their associated output filter capacitors, the GPU core will be isolated from the original, faulty VRM. This allows the newly integrated external VRM to deliver power directly to the GPU, utilizing the existing filtering network while bypassing the defunct onboard power delivery system. This way ensures that the GPU receives clean, regulated voltage from the donor VRM without interference from the original, damaged circuit.
 
-#### 3. The Donor VRM From Asus Radeon R7 240 Low Profile
+#### The Donor VRM From Asus Radeon R7 240 Low Profile
 
 ![VRM Driver or PWM Controller IC](/assets/img/radeon/R7-240.jpg)
 
@@ -76,7 +76,7 @@ For this project, the replacement voltage regulator module will be salvaged from
 
 This card's VRM design is fundamentally different from the target HD 6670\. The **MSI HD 6670** uses **one** controller IC (uP6201B) that is responsible for driving **two** phases simultaneously. In contrast, the **Asus R7 240** uses **two** separate controller ICs (EM5305)—one for each phase.
 
-#### 3.1 Typical Application Circuit For The Controller
+#### Typical Application Circuit For The Controller
 
 ![VRM Driver or PWM Controller IC](/assets/img/radeon/EM5305_diagram.PNG)
 
@@ -92,26 +92,146 @@ Honestly, this two separate IC design offers significant advantages for repair a
 
 For my modification, I plan to physically cut the traces *after* the inductors and output filter capacitors to eliminate the rest of PCB. This step is important because the IC is designed to protect itself; if I cut the trace before the inductors, the IC will not output voltage. If the controller does not sense any current flowing from its circuit, it will register a fault condition (like an open circuit) and will shut down, outputting no voltage.
 
-### 3.1 Hardware Components
+### Hardware Components
 
-Jekyll requires blog post files to be named according to the following format:
+![VRM Driver or PWM Controller IC](/assets/img/radeon/VRM.webp)
 
-`YEAR-MONTH-DAY-title.MARKUP`
+**Figure 6:** A detailed breakdown of the asymmetrical VRM components on the donor R7 240\.
 
-Where `YEAR` is a four-digit number, `MONTH` and `DAY` are both two-digit numbers, and `MARKUP` is the file extension representing the format used in the file. After that, include the necessary front matter. Take a look at the source for this post to get an idea about how it works.
+A closer examination of the donor card's VRM, shown in **Figure 6**, reveals a unique and asymmetrical hardware implementation. At first glance, the circuit appears strange for a dual-phase system. A conventional discrete dual-phase VRM would typically use four main MOSFET packages (one high-side and one low-side for each of the two phases). However, as seen on the board, there are only three primary MOSFET packages visible.
 
-Jekyll also offers powerful support for code snippets:
+The reason for this is a mix of integrated and discrete components, which are clearly labeled in Figure 6:
 
-{% highlight ruby %}
-def print_hi(name)
-  puts "Hi, #{name}"
-end
-print_hi('Tom')
-#=> prints 'Hi, Tom' to STDOUT.
-{% endhighlight %}
+* **Phase 1:** This phase is highly integrated. As indicated by the label "Dual integrated High and Low side MOSFET for Phase 1," it uses a single 8-pin SO-8 package. The diagram in Figure 6 clarifies this, showing that this single chip contains *both* the high-side and low-side N-Channel MOSFETs required for the phase. This "2-in-1" package is then driven by its dedicated "Controller" (the EM5305).
+* **Phase 2:** This phase uses a more traditional, discrete approach. It is driven by its own "Controller" (the second EM5305) and uses two separate SO-8 packages: one "Phase 2 High Side MOSFET" and one "Phase 2 Low Side MOSFET." As you've identified, these are M3052M series MOSFETs.
 
-Check out the [Jekyll docs][jekyll-docs] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll’s GitHub repo][jekyll-gh]. If you have questions, you can ask them on [Jekyll Talk][jekyll-talk].
+This hybrid or asymmetrical design (one integrated phase, one discrete phase) is another example of a clever space-saving technique, likely chosen to fit all the necessary components onto the constrained area of a low-profile PCB.
 
-[jekyll-docs]: https://jekyllrb.com/docs/home
-[jekyll-gh]:   https://github.com/jekyll/jekyll
-[jekyll-talk]: https://talk.jekyllrb.com/
+## Comparative Analysis: Target VRM vs. Donor VRM
+
+Before the modification could begin, a detailed comparison of the "Absolute Maximum Ratings" of both the original (target) and donor VRM components was necessary. This step is critical to ensure that the donor VRM is not a significant downgrade and can safely handle the power requirements of the HD 6670 GPU core.
+
+### Target VRM (HD 6670\) Specifications
+
+* **Controller:** 1x uPI Group uP6201 (2-Phase)
+* **Power Stages (Symmetrical):**
+  * **High-Side MOSFET:** 1x M3004D (per phase)
+  * **Low-Side MOSFET:** 1x M3016D (per phase)
+
+![VRM Driver or PWM Controller IC](/assets/img/radeon/IC-controller-uP6201-ratings.PNG)
+
+**Figure 7:** Absolute Maximum Ratings for the uP6201B Controller.
+
+![VRM Driver or PWM Controller IC](/assets/img/radeon/M3004D.PNG)
+
+**Figure 8:** Absolute Maximum Ratings for the M3004D High-Side MOSFET.
+
+![VRM Driver or PWM Controller IC](/assets/img/radeon/M3016D.PNG)
+
+### Donor VRM (R7 240\) Specifications
+
+**Controllers:** 2x Excelliance MOS EM5305 (1-Phase)
+**Power Stages (Asymmetrical):**
+
+* **Phase 1:** 1x Niko-Sem P0903YK (Dual N-Channel)
+* **Phase 2:** 1x M3052M (High-Side) & 1x M3058M (Low-Side)
+
+![VRM Driver or PWM Controller IC](/assets/img/radeon/EM5305-ratings.PNG)
+
+**Figure 10:** Absolute Maximum Ratings for the EM5305 Controller.
+
+![VRM Driver or PWM Controller IC](/assets/img/radeon/P0903YK-ratings.PNG)
+
+**Figure 11:** Absolute Maximum Ratings for the P0903YK High and Low Side MOSFET for Phase 1\.
+
+![VRM Driver or PWM Controller IC](assets/img/radeon/M3052M-ratings.PNG)
+
+**Figure 12:** Absolute Maximum Ratings for the M3052M High Side MOSFET for Phase 2\.
+
+![VRM Driver or PWM Controller IC](assets/img/radeon/M3058M-ratings.PNG)
+
+**Figure 13:** Absolute Maximum Ratings for the M3058M Low Side MOSFET for Phase 2\.
+
+### Analysis & Conclusion
+
+For a fair comparison, we will focus on the most critical metric for a VRM: **Continuous Drain Current (ID)**, specifically using the Tc=25°C rating as a best-case scenario comparison.
+
+#### **High-Side MOSFET Capability**
+
+*The High-Side MOSFETs fill the inductor and are most often the bottleneck for total power.*
+
+| VRM               | Phase   | MOSFET       | ID​ (Continuous @ Tc=25°C) |
+| :---------------- | :------ | :----------- | :------------------------- |
+| Target (HD 6670\) | Phase 1 | M3004D       | 55 A                       |
+| Target (HD 6670\) | Phase 2 | M3004D       | 55 A                       |
+|                   |         |              |                            |
+| Donor (R7 240\)   | Phase 1 | P0903YK (Q1) | 31 A                       |
+| Donor (R7 240\)   | Phase 2 | M3052M       | 62 A                       |
+
+#### **Low-Side MOSFET Capability**
+
+*The Low-Side MOSFETs conduct current to ground (completing the circuit) and are critical for efficiency.*
+
+| VRM               | Phase   | MOSFET       | ID​ (Continuous @ Tc=25°C) |
+| :---------------- | :------ | :----------- | :------------------------- |
+| Target (HD 6670\) | Phase 1 | M3016D       | 96 A                       |
+| Target (HD 6670\) | Phase 2 | M3016D       | 96 A                       |
+|                   |         |              |                            |
+| Donor (R7 240\)   | Phase 1 | P0903YK (Q2) | 51 A                       |
+| Donor (R7 240\)   | Phase 2 | M3058M       | 140 A                      |
+
+### **Conclusion**
+
+1. **Low-Side Capability:** This is the most interesting finding. **The total low-side current handling capability of both VRMs is almost identical** (192 A vs. 191 A). This is excellent news, as it indicates the donor VRM's base efficiency and current handling are perfectly comparable.
+2. **High-Side Capability:** The target VRM (HD 6670\) has a **slightly higher total high-side capability** (110 A) compared to the donor VRM (93 A). This means the original VRM was technically "stronger" on paper.
+3. **Asymmetrical Design:** The key difference is the donor (R7 240\) VRM's highly asymmetrical design. It's clear that **Phase 2 (140 A Low-Side) is designed to do the heavy lifting**, while Phase 1 (51 A Low-Side) acts as a helper. In contrast, the original (HD 6670\) VRM had a balanced, symmetrical design (96 A per phase).
+
+**Final Verdict: Is it an Upgrade or Downgrade?**
+
+Technically, this is a **slight downgrade on the high-side**, but **perfectly matched on the low-side**.
+
+However, given that the Radeon R7 240 (where the donor VRM originated) and the Radeon HD 6670 exist in a very similar TDP (Thermal Design Power) class, **the donor VRM is 100% suitable as a replacement.** The 17A difference in *absolute maximum rating* (110A vs 93A) on the high-side will not be an issue in real-world operation, as both VRMs were designed to handle a similar load.
+
+The project is deemed **safe to proceed**.
+
+## Integration with the MSI Radeon HD 6670 PCB
+
+![VRM Driver or PWM Controller IC](assets/img/radeon/integrating-circuit.webp)
+
+This section details the physical modification and the wiring required to integrate the donor VRM into the target GPU.
+
+### **Modification and Implementation**
+
+The donor PCB was first prepared by cutting the board to isolate only the VRM circuitry, removing unnecessary components and PCB area. To make the external VRM functional, three critical connections must be established between the donor board and the target HD 6670:
+
+1. **Main Voltage Output (+1.2V):** The output is taken from the pins of the small filter capacitors located immediately after the inductors on the donor board. The default output is approximately 1.2V, though this value can be tuned by modifying the **feedback resistor divider** for overvolting or undervolting purposes. Due to the high current involved, thick, high-quality copper wire is required to minimize resistance and voltage drop.
+2. **12V Input Supply:** The donor VRM requires a stable 12V supply, which is tapped directly from the **PCIe power rail** of the target GPU. This 12V rail provides the main power for the MOSFETs and is also stepped down by internal regulators to provide the VCC for the controller ICs.
+3. **Feedback and Monitoring:** The **Feedback (FB)** pin of the VRM controller must be connected to the output rail after the inductor. This connection is vital for the IC to "sense" the output voltage and adjust the PWM signal accordingly. Furthermore, as discussed in the current sensing analysis, the controller relies on this path to monitor current; without this loop, the VRM will enter a fault state and refuse to output any voltage.
+
+![VRM Driver or PWM Controller IC](assets/img/radeon/mod1.webp)
+
+**Figure 12:** Connecting the \+12V power from the target GPU's PCIe lane to the donor VRM PCB.
+
+![VRM Driver or PWM Controller IC](assets/img/radeon/mod2.webp)
+
+**Figure 13:** Connecting the \+1.2V output and feedback wires to the target VRM's output stage (backside of the PCB, specifically to the capacitor pins following the inductors).
+
+![VRM Driver or PWM Controller IC](assets/img/radeon/mod3.webp)
+
+![VRM Driver or PWM Controller IC](assets/img/radeon/mod4.webp)
+
+**Figure 14:** The final assembly showing the donor VRM PCB stacked onto the target GPU using bolts and spacers. Note that the \+12V PCIe wire is not shown in this specific frame but is part of the completed circuit.
+
+## Changing donor VRM with higher power
+
+![VRM Driver or PWM Controller IC](assets/img/radeon/mod5.webp)
+
+After several weeks of operation, the initial donor VRM suffered a failure. The root cause was a dead MOSFET, which forced the system into single-phase mode. This resulted in power delivery that was significantly less stable than the original dual-phase operation; furthermore, the remaining phase was forced to carry the entire load, causing the power inductors to overheat dangerously.
+
+To rectify this, I replaced the failed unit with a more robust VRM salvaged from a **Dell Radeon HD 7570**. This new donor provides power delivery that is equal to, if not higher than, the target GPU's original specifications. The modification process remained identical, allowing me to reuse the existing wiring. While the filter capacitors I chose are physically large and arguably overkill, they were what I had available in my parts bin—and in the spirit of hobbyist engineering, "if it works, don't touch it."
+
+To enhance the setup, I integrated a **mini digital voltmeter** to monitor the GPU Vcore in real-time. I also modified the feedback circuit by implementing a voltage divider with a **10kΩ potentiometer**. This allows for quick, manual "fine-tuning" of the voltage, making it easy to perform undervolting or overvolting while immediately observing the changes on the display.
+
+## Test Result
+
+On progress..

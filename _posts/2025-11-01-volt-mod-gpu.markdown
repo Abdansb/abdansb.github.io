@@ -2,6 +2,7 @@
 title:  "External VRM Mod Project Radeon HD6670"
 date:   2025-11-01 12:34:05 +0700
 categories: [Hardware]
+image: /assets/img/radeon/integrating-circuit.webp
 ---
 A hardware modification project to unlock the performance of an aging GPU by providing stable, adjustable voltage via an external Voltage Regulator Module (VRM).
 

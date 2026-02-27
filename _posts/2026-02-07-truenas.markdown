@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Building a Virtualized TrueNAS Server for PS2 SMB Gaming: A Complete Guide on Arch Linux"
+title: "Building a Virtualized TrueNAS Server for PS2 SMB"
 date: 2026-02-27 23:00:00 +0700
 categories: [Homelab, Retro Gaming, Linux]
 tags: [TrueNAS, ZFS, VirtualBox, Arch Linux, PS2, OPL, SMB]

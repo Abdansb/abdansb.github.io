@@ -89,7 +89,7 @@ Once built, my pool (named "Toshiba") came `ONLINE`. Out of the 30GB raw storage
 
 ## Step 7: Configuring SMB and Datasets
 
-You should never share your root dataset. To do this properly, I created a child dataset named `Company-Data`.
+You should never share your root dataset. To do this properly, I created a child dataset named `Company-Data` or whatever it is.
 
 ![Adding Dataset](/assets/img/truenas/adddataset.webp)
 *Creating the Company-Data dataset.*
@@ -99,7 +99,7 @@ Next, I enabled the Windows Shares (SMB) service and pointed it to the newly cre
 ![Adding SMB Share](/assets/img/truenas/addsmb.webp)
 *Binding the SMB service to `/mnt/Toshiba/Company-Data`.*
 
-## Step 8: The Enterprise Security Trap (Access Denied)
+## Step 8: Add user
 
 Excited to test the connection, I jumped back into my Arch terminal and firstly tried to list the directory using `smbclient` with the default `root` user (forgot to create user). 
 
